@@ -1,0 +1,45 @@
+run once per dataset (from_video, then from_images).
+
+1. Prep images
+python scripts/extract_frames.py
+Samples ~200 frames from your video into reconstruction/from_video/images/, copies your photos into reconstruction/from_images/images/.
+
+2. COLMAP sparse + undistort (CPU-only — stops here now, no more patch_match_stereo/stereo_fusion)
+$run = "reconstruction\from_video"   # then repeat with from_images
+
+colmap feature_extractor --database_path "$run\database.db" --image_path "$run\images"
+colmap exhaustive_matcher --database_path "$run\database.db"
+
+mkdir "$run\sparse"
+colmap mapper --database_path "$run\database.db" --image_path "$run\images" --output_path "$run\sparse"
+colmap model_converter --input_path "$run\sparse\0" --output_path "$run\sparse\0" --output_type TXT
+
+colmap image_undistorter --image_path "$run\images" --input_path "$run\sparse\0" --output_path "$run\dense" --output_type COLMAP
+This is identical to before through mapper/model_converter. image_undistorter produces $run\dense\images + $run\dense\sparse (now PINHOLE model) — that's as far as COLMAP itself goes on this machine.
+
+3. OpenMVS dense reconstruction + mesh (new — replaces the CUDA-only COLMAP dense step)
+$bin = "C:\tools\OpenMVS\vc17\x64\Release"
+$dense = "$run\dense"
+
+& "$bin\InterfaceCOLMAP.exe"   -i $dense -o "$dense\scene.mvs"
+& "$bin\DensifyPointCloud.exe" -i "$dense\scene.mvs" -o "$dense\scene_dense.mvs"
+& "$bin\ReconstructMesh.exe"   -i "$dense\scene_dense.mvs" -o "$dense\scene_dense_mesh.ply"
+
+
+- InterfaceCOLMAP — converts COLMAP's undistorted model into OpenMVS's .mvs scene format
+- DensifyPointCloud — the slow one (this is doing what patch_match_stereo/stereo_fusion would have, but on CPU) — produces scene_dense.ply
+- ReconstructMesh — Poisson-style surface reconstruction from the dense cloud → scene_dense_mesh.ply
+
+Note: these tools don't print to console — they write a log file (InterfaceCOLMAP-<timestamp>.log etc.) in the working directory. Check those if something looks off.
+
+Repeat steps 2-3 for from_images ($run = "reconstruction\from_images").
+
+4. Compare the two runs
+python scripts/compare_reconstructions.py
+Prints registered-image count / sparse points / reprojection error / dense point count for both, and saves reconstruction/comparison.png (side-by-side point clouds).
+
+5. Blender cleanup — unchanged from before:
+blender --python blender\cleanup_scene.py
+Import scene_dense.ply (or scene_dense_mesh.ply if you want the meshed version instead of raw points), manually delete stray geometry/walls, export as scene.obj.
+
+Scripted equivalents of steps 1-3 also exist if you want to skip the manual commands later: python scripts/extract_frames.py, python scripts/run_colmap.py --run <run>, python scripts/run_openmvs.py --run <run>.
