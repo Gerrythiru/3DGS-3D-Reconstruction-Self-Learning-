@@ -1,0 +1,23 @@
+# Raw capture data (personal photos/video, not for a public repo)
+video_capture/
+image_capture/
+raw data/
+
+# Reconstruction outputs (large intermediate/generated binaries)
+reconstruction/
+
+# Python
+__pycache__/
+*.pyc
+
+# OpenMVS working files (land in cwd when run without -w)
+*.log
+depth*.dmap
+depth*.png
+
+# Personal working notes, not polished docs
+Manual Instructions.txt
+
+# OS
+Thumbs.db
+.DS_Store
