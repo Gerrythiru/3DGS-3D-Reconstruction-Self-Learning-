@@ -32,6 +32,16 @@ $dense = "$run\dense"
 
 Note: these tools don't print to console — they write a log file (InterfaceCOLMAP-<timestamp>.log etc.) in the working directory. Check those if something looks off.
 
+Once ReconstructMesh finishes, launch the OpenMVS viewer pointed at whichever output you want to inspect:
+
+C:\tools\OpenMVS\vc17\x64\Release\Viewer.exe reconstruction\from_video\dense\scene_dense_mesh.ply
+
+or, to look at the raw dense point cloud instead of the meshed surface:
+
+C:\tools\OpenMVS\vc17\x64\Release\Viewer.exe reconstruction\from_video\dense\scene_dense.ply
+
+
+
 Repeat steps 2-3 for from_images ($run = "reconstruction\from_images").
 
 4. Compare the two runs
