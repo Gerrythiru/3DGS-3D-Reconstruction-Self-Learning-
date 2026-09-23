@@ -6,20 +6,10 @@ MuJoCo, train a robot in simulation, and eventually deploy back to the real worl
 
 ```mermaid
 flowchart LR
-    subgraph done["Phases 1–3 (this repo)"]
-        A["📱 Capture<br/>iPhone walk-around video"] --> B["🎞️ Frame sampling<br/>extract_frames.py<br/>300 frames"]
-        B --> C["📍 Sparse reconstruction<br/>COLMAP<br/>camera poses + sparse points"]
-        C --> D["☁️ Dense reconstruction<br/>OpenMVS (CPU)<br/>dense cloud + mesh"]
-        D --> E["🧹 Mesh cleanup<br/>Blender<br/>scene.obj (in progress)"]
-    end
-    subgraph next["Phases 4–7 (planned)"]
-        F["🤖 Simulation<br/>MuJoCo + UFACTORY Lite 6"] --> G["🎯 Train policy<br/>Stable Baselines3<br/>reach the object"]
-        G --> H["👁️ Perception<br/>virtual cameras<br/>pose + segmentation"]
-        H --> I["🌍 Deploy<br/>back to the real robot"]
-    end
-    E --> F
-    I -. "scene changes → recapture" .-> A
+    A[Capture] --> B[COLMAP] --> C[OpenMVS] --> D[Blender] -.-> E[MuJoCo] -.-> F[Train] -.-> G[Deploy]
 ```
+
+Solid arrows: done in this repo. Dashed arrows: planned.
 
 This repo currently covers **Phases 1–3**: turning a walk-around iPhone video into
 a dense point cloud and mesh on a laptop **with no NVIDIA GPU**, using COLMAP
