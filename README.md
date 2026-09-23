@@ -24,7 +24,7 @@ flowchart LR
 This repo currently covers **Phases 1–3**: turning a walk-around iPhone video into
 a dense point cloud and mesh on a laptop **with no NVIDIA GPU**, using COLMAP
 (sparse) + OpenMVS (dense, CPU). MuJoCo import, robot spawning (UFACTORY Lite 6)
-and RL training are planned next; see [PLAN.md](PLAN.md) for the full roadmap.
+and RL training are planned next (see the diagram above and Next steps below).
 
 ## Input
 
@@ -104,8 +104,6 @@ Installation (COLMAP no-CUDA build, OpenMVS CPU build, Blender, Python deps) is 
 - OpenMVS's dense `.ply` has per-vertex list properties that `trimesh` rejects,
   so `plyfile` is used instead.
 
-[HANDOFF.md](HANDOFF.md) has the full debugging log.
-
 ## Repo layout
 
 ```
@@ -113,8 +111,6 @@ scripts/     frame extraction, COLMAP, OpenMVS, comparison
 blender/     mesh cleanup / export to scene.obj
 docs/        setup instructions
 assets/      README images and result video
-PLAN.md      full 7-phase R2S2R roadmap
-HANDOFF.md   detailed status and debugging notes
 ```
 
 Raw captures (`video_capture/`, `image_capture/`) and reconstruction outputs
