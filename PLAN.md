@@ -459,7 +459,31 @@ PyTorch
 
 Stable Baselines3
 
+## Future Improvements
 
+**Adaptive, content-based frame sampling for `extract_frames.py`.** The
+current approach samples a fixed target frame count evenly spaced in time
+across the video. This is only a good proxy for even *spatial*/angular
+coverage if the camera moved at constant speed throughout — but capture
+guidance (e.g. moving slowly during height-ring transitions to avoid motion
+blur) means speed isn't constant, so uniform temporal sampling oversamples
+the slow parts and undersamples the fast parts.
 
+What actually matters for reconstruction is ~70-80% overlap between
+consecutive *kept* frames, which is a function of how much the viewpoint
+changed, not how much time passed. A more principled approach: instead of
+picking a frame count up front, sample adaptively — keep a frame only once
+it differs "enough" from the last kept frame (e.g. via optical flow
+magnitude or a pixel/feature-difference threshold between consecutive raw
+frames). This would automatically avoid both:
+- redundant near-duplicate frames (which caused COLMAP's `exhaustive_matcher`
+  to hit its per-pair match cap and crash on the bottle-scene video at 500
+  frames — see the 500 vs 300 frame count discussion), and
+- coverage gaps where the camera moved quickly.
 
+Not implemented yet — current workaround is trial-and-error on
+`--target-frames` (300 for the bottle scene) plus capping
+`--SiftExtraction.max_num_features` in `scripts/run_colmap.py` to keep
+per-pair match counts away from the matcher's hard limit regardless of
+frame redundancy.
 

@@ -70,8 +70,9 @@ def copy_images(image_dir: Path, out_dir: Path) -> int:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--target-frames", type=int, default=200,
-        help="Number of frames to sample from the video (default: 200)",
+        "--target-frames", type=int, default=500,
+        help="Number of frames to sample from the video (default: 500)",
+
     )
     args = parser.parse_args()
 

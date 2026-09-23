@@ -47,8 +47,18 @@ def main():
          "--database_path", str(database),
          "--image_path", str(images)])
 
+    # use_gpu=0 forces CPU-only matching. The OpenGL SiftGPU matcher (used
+    # on this machine's Intel iGPU, no CUDA available) has a hardcoded
+    # 16384 max-matches limit that isn't exposed through any tunable flag
+    # (confirmed: neither --SiftExtraction.max_num_features nor
+    # --FeatureMatching.max_num_matches change it) -- it crashed outright
+    # (STATUS_ACCESS_VIOLATION) at both 500 and 300 frames, so frame count
+    # wasn't the actual driver. CPU matching sidesteps the OpenGL backend
+    # entirely; slower, but avoids the crash mechanism rather than
+    # gambling on reducing the odds of hitting it.
     run(["colmap", "exhaustive_matcher",
-         "--database_path", str(database)])
+         "--database_path", str(database),
+         "--FeatureMatching.use_gpu", "0"])
 
     run(["colmap", "mapper",
          "--database_path", str(database),
