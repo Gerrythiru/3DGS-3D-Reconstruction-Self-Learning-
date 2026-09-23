@@ -11,9 +11,9 @@ flowchart LR
 
 Solid arrows: done in this repo. Dashed arrows: planned.
 
-This repo currently covers **Phases 1–3**: turning a walk-around iPhone video into
+This repo currently covers the first 5 steps: turning a walk-around iPhone video into
 a dense point cloud and mesh on a laptop **with no NVIDIA GPU**, using COLMAP
-(sparse) + OpenMVS (dense, CPU). MuJoCo import, robot spawning (UFACTORY Lite 6)
+(sparse) + OpenMVS (dense, CPU) and MuJoCo import. Robot spawning (UFACTORY Lite 6)
 and RL training are planned next (see the diagram above and Next steps below).
 
 ## Input
