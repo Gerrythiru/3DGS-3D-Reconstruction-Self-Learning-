@@ -47,7 +47,7 @@ Sparse reconstruction stats (COLMAP), compared with an earlier kitchen capture:
 | Mean reprojection error   | 0.61 px          | 0.79 px                 |
 | Median reprojection error | 0.48 px          | 0.63 px                 |
 
-### Earlier attempt: the kitchen
+### Earlier attempt: Trying to reconstruct the whole kitchen (Overconfident...)
 
 The first capture was meant to be a tabletop but ended up being a whole kitchen.
 Sparse numbers looked fine, but the dense result was poor:
